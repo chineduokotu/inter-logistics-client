@@ -20,12 +20,13 @@ Choose client as the hosting root folder.
 - Install: npm ci
 - Build: npm run build
 - Publish directory: dist
-- Production builds automatically use https://inter-logistics-server.onrender.com/api. VITE_API_URL overrides the local backend in development only.
+- Production builds use /api on the website domain. The Cloudflare Worker in worker.ts forwards these requests to https://inter-logistics-server.onrender.com so session cookies stay first-party on phones. VITE_API_URL overrides the local backend in development only.
 
-Configure the static host to rewrite all page routes to /index.html so refreshing /book, /track, /admin and /mailbox works. Restart the development server after changing VITE_API_URL. Never put private keys here: all VITE_ values are public.
+On Cloudflare Workers, keep the build command npm run build and deploy command npx wrangler deploy. Commit worker.ts and wrangler.json alongside package.json. The configuration serves dist with SPA fallback and routes /api requests through the Worker. On another static host, configure an equivalent /api reverse proxy and rewrite frontend page routes to /index.html. Restart the development server after changing VITE_API_URL. Never put private keys here: all VITE_ values are public.
 
 ## Files
 
+- worker.ts and wrangler.json: Cloudflare frontend hosting and same-origin API proxy
 - src/: pages, components, styles and API connection
 - src/contracts.ts: frontend validation schemas
 - public/: images and original CC0 schematic map (license beside asset)

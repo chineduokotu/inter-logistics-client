@@ -22,6 +22,7 @@
     "src",
     "tests",
     "vite.config.ts",
+    "worker.ts",
     "vitest.config.ts"
   ]
 }

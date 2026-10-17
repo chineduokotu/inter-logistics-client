@@ -3,7 +3,7 @@ export class ApiError extends Error {
 }
 export const API_URL = (import.meta.env.DEV
   ? import.meta.env.VITE_API_URL || "http://127.0.0.1:4000/api"
-  : "https://inter-logistics-server.onrender.com/api"
+  : "/api"
 ).replace(/\/$/, "");
 export const apiUrl = (path: string) => API_URL + path;
 export async function api<T = any>(
