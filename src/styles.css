@@ -15,6 +15,9 @@
 body {
   margin: 0;
 }
+html {
+  scroll-padding-top: 112px;
+}
 a {
   color: inherit;
   text-decoration: none;
@@ -76,6 +79,9 @@ hr {
   margin: 28px 0;
 }
 header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
   height: 96px;
   padding: 0 5%;
   display: flex;
@@ -83,6 +89,7 @@ header {
   justify-content: space-between;
   gap: 30px;
   background: #faf9f6;
+  box-shadow: 0 1px 0 #081d2b12;
 }
 .logo {
   display: inline-flex;
@@ -92,6 +99,8 @@ header {
   font-weight: 800;
   letter-spacing: -1.5px;
 }
+.brand-name { display: flex; flex-direction: column; gap: 4px; line-height: 1.1; }
+.brand-name small { color: inherit; font-size: 10px; font-weight: 500; letter-spacing: .2px; white-space: nowrap; }
 .brandmark {
   display: flex;
   gap: 3px;
@@ -112,12 +121,24 @@ header {
 }
 nav {
   display: flex;
-  gap: 28px;
-  font-size: 14px;
+  gap: 24px;
+  font-size: 18px;
   font-weight: 600;
+}
+nav a {
+  white-space: nowrap;
 }
 nav a:hover {
   color: var(--orange);
+}
+nav a.active {
+  color: var(--orange);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
+}
+.header-quote.active {
+  background: var(--orange);
 }
 .button {
   display: inline-flex;
@@ -791,17 +812,20 @@ progress {
 .tracking-refresh .button { min-height: 44px; padding: 12px 20px; }
 .status-update-time { display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px; margin: -8px 0 26px; }
 .status-update-time time { color: var(--muted); }
-.shipment-progress ol { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); list-style: none; padding: 0; margin: 28px 0; }
-.shipment-progress li { display: flex; flex-direction: column; gap: 8px; border-top: 2px solid var(--line); padding: 18px 10px 0 0; }
-.shipment-progress li.current { border-color: var(--orange); }
-.shipment-progress li.recorded { border-color: #6a8a78; }
-.progress-dot { font-size: 18px; color: var(--muted); }
-.current .progress-dot { color: var(--orange); }
-.recorded .progress-dot { color: #417246; }
-.shipment-progress li strong { font-size: 13px; }
-.shipment-progress li small { font-size: 11px; }
-.status-stopped { padding: 12px 16px; background: #fff0e9; color: #8e320e; }
-@media(max-width:600px){ .tracking-refresh { align-items: flex-start; flex-direction: column; } .shipment-progress ol { grid-template-columns: 1fr; } .shipment-progress li { display: grid; grid-template-columns: 24px 1fr; padding: 14px 0; } .shipment-progress li small { grid-column: 2; } }
+.shipment-progress ol { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 10px; list-style: none; padding: 0; margin: 28px 0; }
+.shipment-progress li { display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--line); border-top: 4px solid var(--line); padding: 22px 16px; background: #fafbf8; }
+.shipment-progress li.current { border-color: var(--orange); background: var(--orange); color: var(--navy); box-shadow: 0 6px 20px #ff591c24; }
+.shipment-progress li.recorded { border-top-color: #6a8a78; background: #f0f6f1; }
+.shipment-progress .progress-dot { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid #c5ceca; border-radius: 50%; font-size: 19px; color: var(--muted); }
+.shipment-progress .current .progress-dot { background: var(--navy); border-color: var(--navy); color: white; }
+.shipment-progress .recorded .progress-dot { background: #417246; border-color: #417246; color: white; }
+.shipment-progress li strong { font-size: 16px; font-weight: 700; line-height: 1.35; }
+.shipment-progress li.current strong { font-size: 23px; letter-spacing: -.6px; }
+.shipment-progress li small { font-size: 12px; }
+.shipment-progress li.current small { align-self: flex-start; background: var(--navy); color: white; padding: 6px 9px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.status-stopped { padding: 20px; background: var(--navy); border-left: 5px solid var(--orange); color: white; font-size: 18px; font-weight: 600; }
+@media(max-width:900px) and (min-width:601px){ .shipment-progress ol { gap: 6px; } .shipment-progress li { padding: 18px 10px; } .shipment-progress li strong { font-size: 14px; } .shipment-progress li.current strong { font-size: 19px; } }
+@media(max-width:600px){ .tracking-refresh { align-items: flex-start; flex-direction: column; } .shipment-progress ol { grid-template-columns: 1fr; } .shipment-progress li { display: grid; grid-template-columns: 36px 1fr; align-items: center; padding: 18px; } .shipment-progress li small { grid-column: 2; justify-self: start; } }
 .tracking-banner {
   background: var(--navy);
   color: white;
@@ -1164,6 +1188,9 @@ progress {
   min-height: 46px;
   padding: 13px 20px;
 }
+.shipment-delete-action { display: inline-block; margin: 4px 0 4px 12px; }
+.shipment-delete-action .delete-request-button { border-color: #c46a56; color: #9b2b17; font-size: 12px; font-weight: 600; }
+.shipment-delete-action .delete-request-button:hover { background: #fff0e9; }
 .table-wrap {
   overflow-x: auto;
 }
@@ -1300,17 +1327,29 @@ pre {
   }
 }
 @media (max-width: 1150px) {
+  html {
+    scroll-padding-top: 150px;
+  }
   header {
-    gap: 18px;
-    padding: 0 4%;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    height: auto;
+    min-height: 128px;
+    gap: 14px 18px;
+    padding: 14px 4%;
   }
   nav {
-    gap: 16px;
-    font-size: 12px;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: center;
+    gap: 24px;
+    font-size: 17px;
   }
   .header-quote {
+    grid-column: 2;
+    grid-row: 1;
     padding: 15px;
-    font-size: 13px;
+    font-size: 15px;
   }
   .hero-copy {
     padding: 65px 8% 55px 10%;
@@ -1377,10 +1416,14 @@ pre {
   }
 }
 @media (max-width: 800px) {
+  html {
+    scroll-padding-top: 94px;
+  }
   header {
+    display: flex;
     height: 78px;
-    position: relative;
-    z-index: 10;
+    min-height: 0;
+    padding: 0 4%;
     flex-wrap: wrap;
   }
   .logo {
@@ -1703,7 +1746,7 @@ pre {
 .receipt-toolbar { display: flex; justify-content: space-between; gap: 16px; margin: 0 auto 24px; max-width: 900px; }
 .receipt-card { max-width: 900px; margin: 0 auto; padding: 44px; background: #fff; border: 1px solid var(--line); overflow-wrap: anywhere; }
 .receipt-heading { display: flex; justify-content: space-between; gap: 28px; padding-bottom: 28px; border-bottom: 2px solid var(--navy); }
-.receipt-brand { color: var(--orange); font-size: 26px; font-weight: 800; letter-spacing: -1px; }
+.receipt-brand { color: var(--orange); font-size: 22px; font-weight: 800; letter-spacing: -1px; }
 .receipt-heading p { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
 .receipt-heading h1 { font-size: 26px; margin: 10px 0 0; letter-spacing: -1px; }
 .receipt-meta, .receipt-parties, .receipt-details-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 22px 36px; }

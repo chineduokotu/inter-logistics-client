@@ -1,6 +1,6 @@
 import type {Status} from './contracts';
 import {customerStatuses, statusStage as stageFor} from './shipmentStatuses';
-const steps=customerStatuses.filter(status=>status!=='Cancelled');
+const steps=customerStatuses.filter(status=>status!=='Cancelled'&&status!=='On Hold');
 export function TrackingProgress({status,events}:{status:Status;events:{status:Status}[]}){
   const stopped=status==='Cancelled'||status==='Returned to Sender';
   const current=stageFor(status);
@@ -8,6 +8,7 @@ export function TrackingProgress({status,events}:{status:Status;events:{status:S
   return <section className="panel shipment-progress" aria-label="Tracking progress">
     <h2>Tracking progress</h2>
     {stopped&&<p className="status-stopped">{status}. The shipment is no longer progressing toward delivery.</p>}
+    {status==='On Hold'&&<p className="status-stopped">On Hold. Progress is paused. Check the latest tracking note for details.</p>}
     <ol>{steps.map(step=>{
       const active=!stopped&&current===step;
       const saved=recorded.has(step);

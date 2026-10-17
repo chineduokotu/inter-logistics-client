@@ -20,9 +20,9 @@ Choose client as the hosting root folder.
 - Install: npm ci
 - Build: npm run build
 - Publish directory: dist
-- Environment: VITE_API_URL=https://your-backend-domain/api
+- Production builds automatically use https://inter-logistics-server.onrender.com/api. VITE_API_URL overrides the local backend in development only.
 
-Configure the static host to rewrite all page routes to /index.html so refreshing /book, /track, /admin and /mailbox works. Rebuild after changing VITE_API_URL. Never put private keys here: all VITE_ values are public.
+Configure the static host to rewrite all page routes to /index.html so refreshing /book, /track, /admin and /mailbox works. Restart the development server after changing VITE_API_URL. Never put private keys here: all VITE_ values are public.
 
 ## Files
 

@@ -4,6 +4,7 @@ export const customerStatuses = [
   "In Transit",
   "Out for Delivery",
   "Delivered",
+  "On Hold",
   "Cancelled",
 ] as const;
 

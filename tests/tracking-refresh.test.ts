@@ -22,5 +22,11 @@ it('refreshes persisted tracking data in place, keeps history and shows the save
   expect(document.querySelector('.timeline')?.textContent).toContain('Saved by administrator');
   expect(fetch.mock.calls.length).toBe(count+1);
   expect(fetch.mock.calls.every(call=>!call[1]?.method||call[1].method==='GET')).toBe(true);
+  fetch.mockImplementationOnce(async()=>({ok:false,status:404,json:async()=>({error:'No record found.'})}));
+  const retry=Array.from(document.querySelectorAll('button')).find(b=>b.textContent==='Refresh Status')!;
+  await act(async()=>{retry.click();});
+  expect(document.querySelector('.tracking-banner')).toBeNull();
+  expect(document.querySelector('.shipment-progress')).toBeNull();
+  expect(document.querySelector('[role="alert"]')?.textContent).toBe('No record found.');
  }finally{vi.restoreAllMocks();vi.unstubAllGlobals();}
 });

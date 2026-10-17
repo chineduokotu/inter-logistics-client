@@ -1,4 +1,10 @@
-export const API_URL = (import.meta.env.VITE_API_URL || "http://127.0.0.1:4000/api").replace(/\/$/, "");
+export class ApiError extends Error {
+ constructor(message:string, public status:number){super(message);this.name="ApiError";}
+}
+export const API_URL = (import.meta.env.DEV
+  ? import.meta.env.VITE_API_URL || "http://127.0.0.1:4000/api"
+  : "https://inter-logistics-server.onrender.com/api"
+).replace(/\/$/, "");
 export const apiUrl = (path: string) => API_URL + path;
 export async function api<T = any>(
   path: string,
@@ -23,13 +29,15 @@ export async function api<T = any>(
     );
   }
   if (!r.ok) {
+    if (r.status === 401 && !path.endsWith("/login") && typeof window !== "undefined")
+      window.dispatchEvent(new Event("cargoa-session-expired"));
     let e;
     try {
       e = await r.json();
     } catch {
       e = { error: "The service is unavailable. Please try again." };
     }
-    throw new Error(e.error || "Request failed.");
+    throw new ApiError(e.error || "Request failed.", r.status);
   }
   return r.json();
 }

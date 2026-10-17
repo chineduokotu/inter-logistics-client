@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { DeleteShipmentButton } from "./DeleteShipmentButton";
 import {
   mapSchema,
   type MapState,
@@ -20,6 +21,19 @@ import {
 import { Login, Inbox } from "./mailbox";
 export function AdminDashboard() {
   const [ready, setReady] = useState(false);
+  const [logoutError, setLogoutError] = useState("");
+  useEffect(() => {
+    const expired = () => { setReady(false); setSelected(undefined); };
+    window.addEventListener("cargoa-session-expired", expired);
+    return () => window.removeEventListener("cargoa-session-expired", expired);
+  }, []);
+  useEffect(() => {
+    if (!ready) return;
+    const poll = () => api("/admin/inbox").then(r => setUnread(r.unread)).catch(() => {});
+    void poll();
+    const timer = window.setInterval(() => { if (document.visibilityState !== "hidden") void poll(); }, 30000);
+    return () => window.clearInterval(timer);
+  }, [ready]);
   const [tab, setTab] = useState("shipments");
   const [unread, setUnread] = useState(0);
   const [selected, setSelected] = useState<string>();
@@ -28,12 +42,13 @@ export function AdminDashboard() {
       .then((s) => {
         setReady(s.role === "admin");
         if (s.role === "admin")
-          api("/admin/inbox").then((r) => setUnread(r.unread));
+          api("/admin/inbox").then((r) => setUnread(r.unread)).catch(() => {});
       })
       .catch(() => {});
   }, []);
   return (
-    <Page eyebrow="CARGOA OPERATIONS" title="The control centre.">
+    <Page eyebrow="InterCargo OPERATIONS" title="The control centre.">
+      <ErrorBox error={logoutError} />
       {ready ? (
         <>
           <div className="admin-tabs">
@@ -61,8 +76,8 @@ export function AdminDashboard() {
             <button
               className="logout"
               onClick={async () => {
-                await api("/logout", send("POST", {}));
-                setReady(false);
+                try { await api("/logout", send("POST", {})); setReady(false); setSelected(undefined); setLogoutError(""); }
+                catch (e: any) { setLogoutError(e.message); }
               }}
             >
               Sign out
@@ -83,7 +98,7 @@ export function AdminDashboard() {
           admin
           onLogin={() => {
             setReady(true);
-            api("/admin/inbox").then((r) => setUnread(r.unread));
+            api("/admin/inbox").then((r) => setUnread(r.unread)).catch(() => {});
           }}
         />
       )}
@@ -179,7 +194,7 @@ function Shipments({ onSelect }: { onSelect: (s: string) => void }) {
           </span>
         </div>
         {busy ? (
-          <div className="empty">Loading shipments…</div>
+          <div className="empty">{error ? "Shipment could not be loaded." : "Loading shipment?"}</div>
         ) : rows.length ? (
           <table>
             <thead>
@@ -219,6 +234,7 @@ function Shipments({ onSelect }: { onSelect: (s: string) => void }) {
                     >
                       ↗
                     </button>
+                    <DeleteShipmentButton code={s.code} onDeleted={()=>load(rows.length===1&&page>1?page-1:page)}/>
                   </td>
                 </tr>
               ))}
@@ -288,9 +304,10 @@ function Detail({ code, back }: { code: string; back: () => void }) {
   }
   return (
     <>
-      <button className="text-button" onClick={back}>
-        ← All shipments
-      </button>
+      <div className="toolbar">
+        <button className="text-button" onClick={back}>← All shipments</button>
+        {data && <DeleteShipmentButton code={code} onDeleted={back}/>}
+      </div>
       <ErrorBox error={error} />
       {notice && (
         <p className="success" role="status">
@@ -334,6 +351,8 @@ function Detail({ code, back }: { code: string; back: () => void }) {
               </div>
               <hr />
               <p>{data.description}</p>
+              <p><strong>Dimensions:</strong> {data.dimensions || "Not provided"}</p>
+              <p><strong>Delivery preferences:</strong> {data.preferences || "Not provided"}</p>
               <p>
                 {data.type} · {data.quantity} parcel(s) · {data.weight} kg
               </p>
@@ -560,7 +579,7 @@ export function MapEditor({
     setSaving(true);
     try {
       setError("");
-      await api(`/admin/shipments/${code}/map`, send("PUT", { state, notify }));
+      await api(`/admin/shipments/${code}/map`, send("PUT", { state, notify, expectedRevision: data.mapRevision || 0 }));
       setNotice("Map saved.");
       await onSaved();
     } catch (e: any) {

@@ -1,5 +1,6 @@
-import { useRef, useState, type ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { COMPANY_NAME, COMPANY_EMAIL, COMPANY_HEAD_OFFICE } from "./brand";
 import type { MapState, Point } from "./contracts";
 import { api, send, apiUrl } from "./api";
 import { hasCoordinates } from "./mapCoordinates";
@@ -7,18 +8,47 @@ import { InteractiveMap } from "./InteractiveMap";
 import type { SubmissionConfirmation } from "./SubmissionReceipt";
 export function Logo() {
   return (
-    <Link className="logo" to="/" aria-label="CARGOA home">
+    <Link className="logo" to="/" aria-label={`${COMPANY_NAME} home`}>
       <span className="brandmark">
         <i />
         <i />
         <i />
       </span>
-      CARGOA
+      <span className="brand-name"><span>InterCargo</span><small>Air &amp; Sea Freight Services.</small></span>
     </Link>
   );
 }
 export function Header() {
   const [open, setOpen] = useState(false);
+  const { pathname } = useLocation();
+  const [homeSection, setHomeSection] = useState("");
+  useEffect(() => {
+    setOpen(false);
+    if (pathname !== "/") { setHomeSection(""); return; }
+    let frame = 0;
+    const update = () => {
+      const offset = (document.querySelector("header")?.getBoundingClientRect().height || 96) + 80;
+      let current = "";
+      for (const id of ["about", "network"]) {
+        const section = document.getElementById(id);
+        if (section && section.getBoundingClientRect().top <= offset) current = id;
+      }
+      setHomeSection(current);
+    };
+    const scroll = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", scroll, { passive: true });
+    window.addEventListener("resize", scroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", scroll);
+      window.removeEventListener("resize", scroll);
+    };
+  }, [pathname]);
+  const sectionActive = (id: string) => pathname === "/" && homeSection === id;
   return (
     <header>
       <Logo />
@@ -30,16 +60,16 @@ export function Header() {
         ☰ <span className="sr">Menu</span>
       </button>
       <nav className={open ? "open" : ""} onClick={() => setOpen(false)}>
-        <Link to="/">Home</Link>
-        <a href="/#network">Network</a>
-        <a href="/#about">About us</a>
-        <Link to="/contact">Contact</Link>
-        <Link to="/track">Track shipment</Link>
-        <Link to="/mailbox">My Mailbox</Link>
+        <Link to="/" className={sectionActive("") ? "active" : undefined} aria-current={sectionActive("") ? "page" : undefined}>Home</Link>
+        <a href="/#network" className={sectionActive("network") ? "active" : undefined} aria-current={sectionActive("network") ? "location" : undefined}>Network</a>
+        <a href="/#about" className={sectionActive("about") ? "active" : undefined} aria-current={sectionActive("about") ? "location" : undefined}>About us</a>
+        <NavLink to="/contact">Contact</NavLink>
+        <NavLink to="/track">Track shipment</NavLink>
+        <NavLink to="/mailbox">My Mailbox</NavLink>
       </nav>
-      <Link className="button dark header-quote" to="/book">
+      <NavLink className={({ isActive }) => "button dark header-quote" + (isActive ? " active" : "")} to="/book">
         Get a quote <span>↗</span>
-      </Link>
+      </NavLink>
     </header>
   );
 }
@@ -47,9 +77,9 @@ export function Footer() {
   return (
     <footer>
       <Logo />
-      <span>Freight, without friction.</span>
+      <span>Freight, without friction.<br /><small>Head office: {COMPANY_HEAD_OFFICE}</small></span>
       <div>
-        <a href="mailto:hello@cargoa.com">hello@cargoa.com</a>
+        <a href={`mailto:${COMPANY_EMAIL}`}>{COMPANY_EMAIL}</a>
         <Link to="/admin">Admin</Link>
         <a
           href="#"
@@ -163,7 +193,7 @@ export function Confirmation({
         <p>Use your existing mailbox access code to view replies.</p>
       )}
       <div className="actions">
-        {data.receipt && <Link className="button outline" to="/receipt" state={{ confirmation: data }}>View Receipt</Link>}
+        {data.receipt && <Link className="button outline" to={"/receipt?reference=" + encodeURIComponent(data.receipt.reference)} state={{ confirmation: data }}>View Receipt</Link>}
         <button className="button outline" onClick={() => window.print()}>
           Print confirmation
         </button>
@@ -459,7 +489,7 @@ export function ShipmentMap({
           {line && (
             <p className="map-disclaimer">
               {state.mode === "planned"
-                ? "Planned route set by CARGOA. Indicative only."
+                ? "Planned route set by InterCargo. Indicative only."
                 : "Straight line to destination. Indicative only, not the actual route."}
             </p>
           )}
@@ -485,8 +515,7 @@ export function ShipmentMap({
       </div>
       {state.caption && <p>{state.caption}</p>}
       <p className="muted small">
-        Schematic map © CARGOA, CC0. Manually recorded positions; no live GPS or
-        automatic routing.
+        Interactive Mapbox map. Administrator-recorded locations; no GPS feed or automatic routing.
       </p>
     </section>
   );

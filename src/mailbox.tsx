@@ -1,4 +1,5 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
 import { api, send } from "./api";
 import { Page, Field, ErrorBox, Pagination } from "./components";
 export function Login({
@@ -33,7 +34,7 @@ export function Login({
       <p>
         {admin
           ? "Sign in to manage shipments and customer conversations."
-          : "Enter your email and the access code shown when you booked or contacted us."}
+          : "Enter your email and the access code for your booking or inquiry. Each new submission has its own code."}
       </p>
       <Field label="Email address">
         <input name="email" type="email" required autoComplete="username" />
@@ -61,6 +62,12 @@ export function Login({
 }
 export function Mailbox() {
   const [ready, setReady] = useState(false);
+  const [logoutError, setLogoutError] = useState("");
+  useEffect(() => {
+    const expired = () => setReady(false);
+    window.addEventListener("cargoa-session-expired", expired);
+    return () => window.removeEventListener("cargoa-session-expired", expired);
+  }, []);
   useEffect(() => {
     api("/session")
       .then((s) => setReady(s.role === "customer"))
@@ -68,6 +75,7 @@ export function Mailbox() {
   }, []);
   return (
     <Page eyebrow="CONNECTED CONVERSATIONS" title="My Mailbox.">
+      <ErrorBox error={logoutError} />
       {ready ? (
         <>
           <div className="toolbar">
@@ -75,8 +83,8 @@ export function Mailbox() {
             <button
               className="text-button"
               onClick={async () => {
-                await api("/logout", send("POST", {}));
-                setReady(false);
+                try { await api("/logout", send("POST", {})); setReady(false); setLogoutError(""); }
+                catch (e: any) { setLogoutError(e.message); }
               }}
             >
               Sign out
@@ -108,7 +116,12 @@ export function Inbox({
   const [archived, setArchived] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [draft, setDraft] = useState("");
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+  const draft = selected ? drafts[selected] || "" : "";
+  const setDraft = (value: string) => {
+    if (selected) setDrafts(previous => ({ ...previous, [selected]: value }));
+  };
+  const openVersion = useRef(0);
   const [newMessage, setNewMessage] = useState(false);
   const [sending, setSending] = useState(false);
   const [filters, setFilters] = useState({ sender: "", from: "", to: "" });
@@ -140,16 +153,18 @@ export function Inbox({
     load();
   }, [status, archived]);
   async function open(id: string) {
+    const version = ++openVersion.current;
     setError("");
     setSelected(id);
     setThread(undefined);
     setNewMessage(false);
     try {
       const t = await api(base + "/" + id);
+      if (version !== openVersion.current) return;
       setThread(t);
       await api(
         base + "/" + id,
-        send("PATCH", { unread: false, ...(admin ? { status: "Read" } : {}) }),
+        send("PATCH", { unread: false }),
       );
       await load();
     } catch (e: any) {
@@ -170,6 +185,8 @@ export function Inbox({
   async function sendReply(e: FormEvent) {
     e.preventDefault();
     if (!selected) return;
+    const target = selected;
+    const version = openVersion.current;
     setSending(true);
     setError("");
     try {
@@ -177,8 +194,8 @@ export function Inbox({
         base + "/" + selected + "/reply",
         send("POST", { body: draft }),
       );
-      setDraft("");
-      await open(selected);
+      setDrafts(previous => ({ ...previous, [target]: "" }));
+      if (version === openVersion.current) await open(target);
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -242,13 +259,13 @@ export function Inbox({
               }
             />
             <input
-              aria-label="From date"
+              aria-label="From date (UTC)" title="Start of day in UTC"
               type="date"
               value={filters.from}
               onChange={(e) => setFilters({ ...filters, from: e.target.value })}
             />
             <input
-              aria-label="To date"
+              aria-label="To date (UTC)" title="Includes the entire selected day in UTC"
               type="date"
               value={filters.to}
               onChange={(e) => setFilters({ ...filters, to: e.target.value })}
@@ -300,8 +317,8 @@ export function Inbox({
                   {admin
                     ? t.sender
                     : t.kind === "system"
-                      ? "CARGOA Updates"
-                      : "CARGOA Team"}
+                      ? "InterCargo Updates"
+                      : "InterCargo Team"}
                 </strong>
                 <small>{new Date(t.updatedAt).toLocaleDateString()}</small>
               </div>
@@ -339,6 +356,7 @@ export function Inbox({
             <>
               <div className="thread-heading">
                 <h2>{thread.thread.subject}</h2>
+                {!admin && thread.thread.receiptReference && <Link className="button outline" to={"/receipt?reference=" + encodeURIComponent(thread.thread.receiptReference)}>View Receipt</Link>}
                 <div className="actions">
                   <button onClick={() => action({ unread: true })}>
                     Mark unread
@@ -389,8 +407,8 @@ export function Inbox({
                       {m.senderType === "customer"
                         ? "Customer"
                         : m.senderType === "system"
-                          ? "CARGOA Updates"
-                          : "CARGOA Team"}
+                          ? "InterCargo Updates"
+                          : "InterCargo Team"}
                     </strong>
                     <small>{new Date(m.createdAt).toLocaleString()}</small>
                   </div>

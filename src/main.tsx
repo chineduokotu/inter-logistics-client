@@ -15,7 +15,8 @@ import {
   trackingResponseSchema,
   type TrackingResponse,
 } from "./contracts";
-import { api, send, apiUrl } from "./api";
+import { api, send, ApiError } from "./api";
+import { COMPANY_HEAD_OFFICE } from "./brand";
 import {
   Header,
   Footer,
@@ -452,7 +453,7 @@ function Track() {
   const [refreshing,setRefreshing]=useState(false);
   const refreshStatus=useRef<(()=>Promise<void>)|null>(null);
   useEffect(() => {
-    if (!code) return;
+    if (!code) {setData(undefined);setError("");setBusy(false);setRefreshing(false);return;}
     setBusy(true);
     setData(undefined);
     setError("");
@@ -464,7 +465,7 @@ function Track() {
       try {
         const result = trackingResponseSchema.parse(await api('/tracking/' + encodeURIComponent(code), {cache:'no-store'}));
         if(active){setData(result);setError('');}
-      } catch(e){if(active)setError(e instanceof Error?e.message:'Could not refresh shipment.');}
+      } catch(e){if(active){if(e instanceof ApiError&&e.status===404)setData(undefined);setError(e instanceof Error?e.message:'Could not refresh shipment.');}}
       finally {inFlight=false;if(active){setBusy(false);setRefreshing(false);}}
     };
     refreshStatus.current=refresh;
@@ -483,7 +484,7 @@ function Track() {
       >
         <Field label="Tracking code">
           <input
-            placeholder="Enter your CARGOA tracking code"
+            placeholder="Enter your InterCargo tracking code"
             value={value}
             onChange={(e) => setValue(e.target.value)}
             required
@@ -546,7 +547,7 @@ function Track() {
               {data.status === "Delivered" ? (
                 <a
                   className="button dark"
-                  href={apiUrl("/tracking/" + data.code + "/receipt")}
+                  href="/mailbox"
                 >
                   Download receipt ↓
                 </a>
@@ -661,6 +662,8 @@ function Contact() {
             </button>
           </form>
           <aside>
+            <p className="eyebrow orange">HEAD OFFICE</p>
+            <p>{COMPANY_HEAD_OFFICE}<br /><small>Full address to be confirmed.</small></p>
             <h2>
               One team.
               <br />

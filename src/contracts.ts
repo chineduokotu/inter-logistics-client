@@ -11,6 +11,7 @@ export const statuses = [
   "Delivered",
   "Delivery Attempted",
   "Returned to Sender",
+  "On Hold",
   "Cancelled",
 ] as const;
 export const text = (max = 200) => z.string().trim().min(1).max(max);
@@ -148,7 +149,7 @@ export function publicMap(
     positions: s.travelled ? positions : positions.map((p) => ({ ...p })),
     lineLabel:
       s.mode === "planned"
-        ? "Planned route set by CARGOA. Indicative only."
+        ? "Planned route set by InterCargo. Indicative only."
         : "Straight line to destination. Indicative only, not the actual route.",
     drawLine:
       !!s.current &&
