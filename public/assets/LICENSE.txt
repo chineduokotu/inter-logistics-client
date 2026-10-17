@@ -1,0 +1,6 @@
+world-map.svg — Original CARGOA schematic world illustration.
+Dedicated to the public domain under CC0 1.0 Universal.
+https://creativecommons.org/publicdomain/zero/1.0/
+
+This illustrative diagram was created for this project without third-party
+geographic data. It is not a navigational or geographically precise map.
