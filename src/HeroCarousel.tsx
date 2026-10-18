@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const slides = [
-  { image: "ocean", title: "Across oceans. Beyond expectations.", label: "Ocean freight", position: "65% center" },
-  { image: "ground", title: "Every road. One reliable partner.", label: "Ground transport", position: "65% center" },
-  { image: "air", title: "Time-critical cargo. Ready for takeoff.", label: "Air freight", position: "70% center" },
+  { image: "ocean", headline: "WE MOVE\nBUSINESS\nFORWARD.", label: "Ocean freight", position: "65% center" },
+  { image: "ground", headline: "Your cargo.\nEvery road.", label: "Ground transport", position: "65% center" },
+  { image: "air", headline: "Air freight.\nBeyond borders.", label: "Air freight", position: "70% center" },
 ];
 
 export function HeroCarousel() {
@@ -32,7 +32,7 @@ export function HeroCarousel() {
     const timer = window.setInterval(() => {
       const next = (active + 1) % slides.length;
       if (loaded.includes(next)) setActive(next);
-    }, 1500);
+    }, 2500);
     return () => window.clearInterval(timer);
   }, [playing, active, loaded]);
   function select(index: number) {
@@ -57,18 +57,11 @@ export function HeroCarousel() {
     </div>)}</div>
     <div className="hero-shade" />
     <div className="hero-copy">
-      <p className="eyebrow"><span />GLOBAL LOGISTICS, SIMPLIFIED</p>
-      <h1>WE MOVE<br /><em>BUSINESS</em><br />FORWARD.</h1>
-      <p className="hero-description">Freight solutions built for speed, certainty, and a world that never stops moving.</p>
+      <p className="eyebrow"><span />{slides[active].label}</p>
+      <h1 key={active} className="hero-headline" aria-live={playing ? "off" : "polite"}>{slides[active].headline}</h1>
       <div className="hero-actions"><Link to="/book" className="button orange-bg">Start shipping <span aria-hidden="true">↗</span></Link><a className="underlined" href="#services">Explore services <span aria-hidden="true">↓</span></a></div>
     </div>
-    <div className="hero-route route-card">
-      <div className="route-top"><span>YOUR NEXT SHIPMENT</span><span className="green">Every mile, connected</span></div>
-      <div className="route-line"><span>●</span><i /><span>●</span></div>
-      <div className="route-bottom"><div><small>FROM PICKUP</small><strong>Your business</strong></div><div><small>TO DELIVERY</small><strong>A world of possibilities</strong></div></div>
-    </div>
     <div className="hero-bottom">
-      <div className="slide-caption" aria-live={playing ? "off" : "polite"}><span className="eyebrow">0{active + 1} / 03 — {slides[active].label}</span><p key={active}>{slides[active].title}</p></div>
       <div className="carousel-controls" aria-label="Slideshow controls">
         <button type="button" aria-label="Previous slide" onClick={() => select(active - 1)}>←</button>
         <div className="carousel-dots">{slides.map((slide, i) => <button type="button" key={slide.image} aria-label={`Show ${slide.label} slide`} aria-pressed={active === i} onClick={() => select(i)}><span /></button>)}</div>

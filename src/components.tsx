@@ -79,7 +79,7 @@ export function Footer() {
         <div className="footer-company"><Logo/><p>We are your connected partner for air, sea, and road freight. From a single parcel to a supply chain, we keep your business moving.</p><span>Freight, without friction.</span></div>
         <div><h2>Our services</h2><Link to="/contact?subject=Warehousing">Warehousing</Link><Link to="/book?type=Air%20Freight">Air Freight</Link><Link to="/book?type=Ocean%20Freight">Ocean Freight</Link><Link to="/book?type=Ground%20Transport">Road Freight</Link></div>
         <div><h2>Quick links</h2><Link to="/about">About us</Link><Link to="/track">Track shipment</Link><Link to="/mailbox">My Mailbox</Link><Link to="/contact">Contact us</Link></div>
-        <div><h2>Contact us</h2><span className="footer-label">HEAD OFFICE</span><p>{COMPANY_HEAD_OFFICE}<br/><small>Full address to be confirmed.</small></p><span className="footer-label">EMAIL ADDRESS</span><a href={`mailto:${COMPANY_EMAIL}`}>{COMPANY_EMAIL}</a></div>
+        <div><h2>Contact us</h2><span className="footer-label">HEAD OFFICE</span><p>{COMPANY_HEAD_OFFICE}</p><span className="footer-label">EMAIL ADDRESS</span><a href={`mailto:${COMPANY_EMAIL}`}>{COMPANY_EMAIL}</a></div>
       </div>
       <div className="reference-container footer-bottom"><p>{year} &copy; Inter-Logistics. All rights reserved.</p><a href="#" onClick={e => { e.preventDefault(); window.scrollTo({top:0,behavior:"smooth"}); }}>Back to top ↑</a></div>
     </footer>

@@ -5,6 +5,7 @@
 .reference-home h2, .reference-page h2 { font-family: "DM Sans", Arial, sans-serif; font-size: clamp(30px, 3vw, 43px); line-height: 1.24; letter-spacing: -1.6px; font-weight: 700; }
 .reference-home .eyebrow, .reference-page .eyebrow { font-size: 11px; letter-spacing: 1.5px; }
 .reference-home p, .reference-page p { color: #667582; line-height: 1.85; }
+.reference-home .eyebrow.orange, .reference-page .eyebrow.orange { color: var(--orange); }
 .reference-home .button, .reference-page .button { border-radius: 0; min-height: 49px; font-size: 12px; padding: 15px 25px; gap: 25px; text-transform: uppercase; letter-spacing: .5px; box-shadow: none; }
 .text-link { display: inline-flex; gap: 16px; align-items: center; color: var(--navy); font-size: 12px; font-weight: 700; border-bottom: 1px solid #d7dfe3; padding-bottom: 4px; }
 .text-link:hover { color: var(--orange); border-color: var(--orange); }
@@ -20,6 +21,8 @@ header.header-home.is-scrolled { background: #fff; color: var(--navy); box-shado
 .reference-home .hero-carousel .hero-copy { padding: 235px 0 190px; max-width: none; width: min(var(--reference-width), calc(100% - 100px)); margin: auto; }
 .reference-home .hero-carousel h1 { font-family: "DM Sans", Arial, sans-serif; font-weight: 700; font-size: clamp(48px, 5.5vw, 78px); line-height: 1.08; letter-spacing: -3px; margin: 20px 0 24px; max-width: 760px; }
 .reference-home .hero-carousel h1 em { color: #fff; font-style: normal; }
+.reference-home .hero-carousel .hero-headline { white-space: pre-line; min-height: 3.24em; animation: hero-enter 650ms both; }
+.reference-home .hero-carousel .hero-bottom { justify-content: center; }
 .reference-home .hero-carousel .hero-description { max-width: 500px; font-size: 16px; color: #e1eaee; margin-bottom: 30px; }
 .reference-home .hero-carousel .eyebrow { color: #fff; }
 .reference-home .hero-shade { background: linear-gradient(90deg, #071e2bd9, #071e2b7a 55%, #071e2b30); }
@@ -237,6 +240,47 @@ footer.reference-footer { display: block; padding: 70px 0 0; font-size: 13px; ba
   .footer-columns > div { gap: 13px; }
   .footer-columns .logo { font-size: 25px; }
   .reference-footer > .footer-bottom { width: calc(100% - 44px); margin-top: 35px; flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+/* Comfortable, substantial type on phones, including forms and footer. */
+@media (max-width: 800px) {
+  .reference-home p, .reference-page p { font-size: 16px; font-weight: 500; line-height: 1.75; color: #465967; }
+  .reference-home h2, .reference-page h2 { font-size: 34px; font-weight: 800; }
+  .reference-highlights h2 { font-size: 25px; font-weight: 800; }
+  .reference-home .eyebrow, .reference-page .eyebrow { font-size: 12px; font-weight: 700; }
+  .site-header nav { font-size: 16px; }
+  .site-header .brand-name small { font-size: 10px; }
+  .reference-home .button, .reference-page .button { font-size: 14px; min-height: 52px; font-weight: 800; }
+  .reference-home .hero.hero-carousel { min-height: 650px; }
+  .reference-home .hero-carousel .hero-copy { padding: 180px 0 150px; }
+  .reference-home .hero-carousel .hero-headline { font-size: clamp(44px, 11.6vw, 64px); font-weight: 800; line-height: 1.08; min-height: 3.24em; letter-spacing: -1.8px; margin-bottom: 28px; }
+  .reference-home .hero-copy > .eyebrow { font-size: 12px; letter-spacing: 1.5px; color: #fff; }
+  .reference-home .hero-carousel .hero-actions { gap: 14px 20px; }
+  .reference-home .hero-actions .underlined { font-size: 14px; font-weight: 700; }
+  .reference-home .hero-carousel .hero-bottom { justify-content: center; bottom: 85px; }
+  .reference-home .carousel-controls > button { width: 40px; height: 40px; }
+  .reference-home .carousel-dots button { width: 30px; height: 44px; }
+  .reference-home .home-tracking-copy > p:last-child { font-size: 15px; }
+  .reference-home .home-tracking-copy .eyebrow { font-size: 11px; }
+  .reference-home .home-tracking h2 { font-size: 29px; }
+  .home-tracking-form > label { font-size: 15px; }
+  .intro-copy > p:not(.eyebrow), .reach-copy > p:not(.eyebrow), .workflow-grid p, .reach-feature p, .reference-assurance > div > p, .service-page-grid p { font-size: 16px; }
+  .workflow-grid h3, .reach-feature h3 { font-size: 21px; font-weight: 800; }
+  .service-tile-overlay h3, .service-page-grid h3 { font-size: 26px; font-weight: 800; }
+  .service-tile-overlay > span, .text-link { font-size: 15px; font-weight: 700; }
+  .assurance-list { font-size: 16px; font-weight: 600; line-height: 1.6; }
+  .reference-statistics span { font-size: 16px; font-weight: 600; }
+  .reference-statistics strong { font-size: 58px; font-weight: 800; }
+  .reference-cta p { color: #e1e9ee; font-size: 16px; }
+  .reference-cta .eyebrow { color: #ffb497; }
+  .marketing-banner p { color: #fff; font-size: 15px; }
+  .reference-workspace .field, .reference-workspace .home-tracking-form > label { font-size: 16px; font-weight: 600; }
+  .reference-workspace input, .reference-workspace select, .reference-workspace textarea { font-size: 16px; }
+  .reference-workspace .panel p, .contact-information p, .contact-information .muted { font-size: 16px; }
+  .contact-information .eyebrow { font-size: 12px; }
+  .footer-columns p, .footer-columns a, .footer-columns .footer-company > span { font-size: 15px; line-height: 1.8; }
+  .footer-columns h2 { font-size: 22px; font-weight: 700; }
+  .footer-label { font-size: 12px; font-weight: 700; }
+  .footer-bottom p, .footer-bottom a { font-size: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .reference-home *, .reference-page *, .site-header { animation: none !important; transition: none !important; }

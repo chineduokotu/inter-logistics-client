@@ -452,7 +452,7 @@ function Contact() {
           </form>
           <aside className="contact-information">
             <p className="eyebrow orange">HEAD OFFICE</p>
-            <p>{COMPANY_HEAD_OFFICE}<br /><small>Full address to be confirmed.</small></p>
+            <p>{COMPANY_HEAD_OFFICE}</p>
             <p className="eyebrow orange">EMAIL ADDRESS</p>
             <p><a href={`mailto:${COMPANY_EMAIL}`}>{COMPANY_EMAIL}</a></p>
             <h2>

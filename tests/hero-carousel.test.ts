@@ -27,9 +27,10 @@ it("preserves links and supports buttons, dots and keyboard navigation", async (
     expect(button("Show Ocean freight slide").getAttribute("aria-pressed")).toBe("true");
     await act(async () => container.querySelectorAll("img").forEach(image => image.dispatchEvent(new Event("load"))));
     expect(button("Show Ground transport slide").getAttribute("aria-pressed")).toBe("true");
-    expect(container.querySelector("h1")?.textContent).toContain("BUSINESS");
+    expect(container.querySelector("h1")?.textContent).toContain("Your cargo.");
     await act(async () => container.querySelector("section")!.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true })));
     expect(button("Show Air freight slide").getAttribute("aria-pressed")).toBe("true");
+    expect(container.querySelector("h1")?.textContent).toContain("Air freight.");
     await act(async () => button("Show Ocean freight slide").click());
     expect(button("Show Ocean freight slide").getAttribute("aria-pressed")).toBe("true");
   } finally { await close(); }
