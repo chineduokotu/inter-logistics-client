@@ -1,0 +1,13 @@
+Stock photography sourced from Pexels, downloaded October 18, 2026.
+Licensed for free commercial use under the Pexels License:
+https://www.pexels.com/legal-pages/license/
+https://help.pexels.com/hc/en-us/articles/360042295214-Can-I-use-the-photos-and-videos-for-a-commercial-project
+
+ocean: https://www.pexels.com/photo/container-ship-on-the-ocean-12047429/
+ground: https://www.pexels.com/photo/white-volvo-semi-truck-on-side-of-road-2199293/
+air: https://www.pexels.com/photo/cargo-airplane-11935038/
+warehouse: https://www.pexels.com/photo/shelves-on-a-warehouse-4483608/
+
+Images resized/cropped and compressed to WebP locally. Stock images illustrate
+freight services and do not imply ownership of depicted vehicles or facilities,
+or endorsement by any depicted operator. No runtime stock-photo API is used.

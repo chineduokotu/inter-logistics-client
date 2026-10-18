@@ -54,12 +54,15 @@ export function Header() {
       <Logo />
       <button
         className="menu"
+        type="button"
+        aria-label={open ? "Close navigation menu" : "Open navigation menu"}
+        aria-controls="primary-navigation"
         aria-expanded={open}
-        onClick={() => setOpen(!open)}
+        onClick={() => setOpen(previous => !previous)}
       >
-        ☰ <span className="sr">Menu</span>
+        <span className="menu-icon" aria-hidden="true"><span /><span /><span /></span>
       </button>
-      <nav className={open ? "open" : ""} onClick={() => setOpen(false)}>
+      <nav id="primary-navigation" className={open ? "open" : ""} onClick={() => setOpen(false)}>
         <Link to="/" className={sectionActive("") ? "active" : undefined} aria-current={sectionActive("") ? "page" : undefined}>Home</Link>
         <a href="/#network" className={sectionActive("network") ? "active" : undefined} aria-current={sectionActive("network") ? "location" : undefined}>Network</a>
         <a href="/#about" className={sectionActive("about") ? "active" : undefined} aria-current={sectionActive("about") ? "location" : undefined}>About us</a>
@@ -80,7 +83,6 @@ export function Footer() {
       <span>Freight, without friction.<br /><small>Head office: {COMPANY_HEAD_OFFICE}</small></span>
       <div>
         <a href={`mailto:${COMPANY_EMAIL}`}>{COMPANY_EMAIL}</a>
-        <Link to="/admin">Admin</Link>
         <a
           href="#"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -139,14 +141,17 @@ export function Page({
   eyebrow,
   title,
   children,
+  background,
 }: {
   eyebrow: string;
   title: string;
   children: ReactNode;
+  background?: "ocean" | "ground" | "air" | "warehouse";
 }) {
   return (
     <main className="workspace">
-      <div className="page-heading">
+      <div className={background ? "page-heading page-heading-image" : "page-heading"}>
+        {background && <img src={`/images/${background}-wide.webp`} srcSet={`/images/${background}-small.webp 800w, /images/${background}-wide.webp 1600w`} sizes="(max-width: 800px) 90vw, 1300px" width="1600" height="1000" alt="" decoding="async" className="page-heading-photo" />}
         <p className="eyebrow orange">{eyebrow}</p>
         <h1>{title}</h1>
       </div>

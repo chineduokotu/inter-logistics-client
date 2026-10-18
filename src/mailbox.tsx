@@ -74,7 +74,7 @@ export function Mailbox() {
       .catch(() => {});
   }, []);
   return (
-    <Page eyebrow="CONNECTED CONVERSATIONS" title="My Mailbox.">
+    <Page eyebrow="CONNECTED CONVERSATIONS" title="My Mailbox." background="warehouse">
       <ErrorBox error={logoutError} />
       {ready ? (
         <>

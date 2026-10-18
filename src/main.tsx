@@ -31,68 +31,20 @@ import {
 import { AdminDashboard } from "./management";
 import { Mailbox } from "./mailbox";
 import "./styles.css";
+import "./home-polish.css";
 import { TrackingProgress } from "./TrackingProgress";
 import { CountUp } from "./CountUp";
 import { SubmissionReceiptPage, type SubmissionConfirmation } from "./SubmissionReceipt";
+import { HeroCarousel } from "./HeroCarousel";
+import { useScrollReveal } from "./useScrollReveal";
 function Home() {
+  const homeRef = useRef<HTMLElement>(null);
+  useScrollReveal(homeRef);
   const navigate = useNavigate();
   const [trackingCode, setTrackingCode] = useState("");
   return (
-    <main>
-      <section className="hero">
-        <div className="hero-copy">
-          <p className="eyebrow">
-            <span />
-            GLOBAL LOGISTICS, SIMPLIFIED
-          </p>
-          <h1>
-            WE MOVE
-            <br />
-            <em>BUSINESS</em>
-            <br />
-            FORWARD.
-          </h1>
-          <p className="hero-description">
-            Freight solutions built for speed, certainty, and a world that never
-            stops moving.
-          </p>
-          <div className="hero-actions">
-            <Link to="/book" className="button orange-bg">
-              Start shipping <span>↗</span>
-            </Link>
-            <a className="underlined" href="#services">
-              Explore services <span>↓</span>
-            </a>
-          </div>
-        </div>
-        <div
-          className="hero-photo"
-          role="img"
-          aria-label="Container port beside the open ocean"
-        >
-          <div className="route-card">
-            <div className="route-top">
-              <span>YOUR NEXT SHIPMENT</span>
-              <span className="green">Every mile, connected</span>
-            </div>
-            <div className="route-line">
-              <span>●</span>
-              <i />
-              <span>●</span>
-            </div>
-            <div className="route-bottom">
-              <div>
-                <small>FROM PICKUP</small>
-                <strong>Your business</strong>
-              </div>
-              <div>
-                <small>TO DELIVERY</small>
-                <strong>A world of possibilities</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+    <main className="home-page" ref={homeRef}>
+      <HeroCarousel />
       <section className="home-tracking" aria-labelledby="home-tracking-title">
         <div className="home-tracking-copy">
           <p className="eyebrow orange">YOUR SHIPMENT, AT A GLANCE</p>
@@ -147,6 +99,7 @@ function Home() {
           <CountUp value={24} suffix="/7" />
           <span>Shipment visibility</span>
         </div>
+        <img className="about-background" src="/images/ocean-small.webp" srcSet="/images/ocean-small.webp 800w, /images/ocean-wide.webp 1600w" sizes="100vw" width="1600" height="1000" loading="lazy" decoding="async" alt="" />
       </section>
       <section className="services" id="services">
         <p className="eyebrow">WHAT WE MOVE</p>
@@ -184,6 +137,7 @@ function Home() {
               key={name}
               to={"/book?type=" + encodeURIComponent(name)}
             >
+              <div className="service-image"><img src={`/images/${["ocean", "air", "ground"][i]}-small.webp`} width="800" height="520" loading="lazy" decoding="async" alt={["Container ship carrying freight at sea", "Cargo aircraft approaching the runway", "Freight trucks travelling along a highway"][i]} /></div>
               <div className="service-number">
                 0{i + 1}
                 <span>↗</span>
@@ -197,6 +151,7 @@ function Home() {
       </section>
       <section className="visibility" id="network">
         <div className="radar">
+          <img className="operations-photo" src="/images/warehouse-small.webp" srcSet="/images/warehouse-small.webp 800w, /images/warehouse-wide.webp 1600w" sizes="(max-width: 800px) 100vw, 50vw" width="1600" height="1000" loading="lazy" decoding="async" alt="Organized warehouse shelving and stored freight" />
           <div className="ring ring-1" />
           <div className="ring ring-2" />
           <div className="ring ring-3" />
@@ -474,7 +429,7 @@ function Track() {
     return ()=>{active=false;refreshStatus.current=null;window.clearInterval(timer);};
   }, [code]);
   return (
-    <Page eyebrow="CLARITY AT EVERY MILE" title="Track your shipment.">
+    <Page eyebrow="CLARITY AT EVERY MILE" title="Track your shipment." background="ground">
       <form
         className="track-form"
         onSubmit={(e) => {
@@ -624,7 +579,7 @@ function Contact() {
     }
   }
   return (
-    <Page eyebrow="ONE POINT OF CONTACT" title="Let’s talk freight.">
+    <Page eyebrow="ONE POINT OF CONTACT" title="Let’s talk freight." background="air">
       {result ? (
         <Confirmation data={result} title="Message received" />
       ) : (
