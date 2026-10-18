@@ -43,7 +43,11 @@ export function HeroCarousel() {
   }
   return <section className="hero hero-carousel" aria-label="Freight services" aria-roledescription="carousel" tabIndex={0}
     onPointerEnter={e => { if (e.pointerType === "mouse") setHovered(true); }} onPointerLeave={() => setHovered(false)}
-    onFocusCapture={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setPaused(true); }}
+    onFocusCapture={e => {
+      // Touch focus must not permanently pause the slideshow while scrolling.
+      // Keyboard focus still pauses it so controls remain easy to operate.
+      if (!e.currentTarget.contains(e.relatedTarget as Node) && (e.target as HTMLElement).matches(":focus-visible")) setPaused(true);
+    }}
     onKeyDown={e => { if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); select(active + (e.key === "ArrowRight" ? 1 : -1)); } }}>
     <div className="hero-slides" aria-hidden="true">{slides.map((slide, i) => <div key={slide.image} className={`hero-slide${active === i ? " is-active" : ""}`}>
       {(i === 0 || preload || active === i) && <img src={`/images/${slide.image}-wide.webp`} srcSet={`/images/${slide.image}-small.webp 800w, /images/${slide.image}-wide.webp 1600w`} sizes="100vw" width="1600" height="1000" alt="" fetchPriority={i === 0 ? "high" : "low"} decoding="async" style={{ objectPosition: slide.position }} onLoad={() => {
