@@ -1821,6 +1821,7 @@ pre {
 .receipt-heading h1 { font-size: 26px; margin: 10px 0 0; letter-spacing: -1px; }
 .receipt-meta, .receipt-parties, .receipt-details-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 22px 36px; }
 .receipt-meta { padding: 24px 0; border-bottom: 1px solid var(--line); margin: 0 0 28px; }
+.receipt-office { font-style: normal; font-size: 14px; line-height: 1.7; margin-bottom: 24px; overflow-wrap: anywhere; }
 .receipt-detail dt { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
 .receipt-detail dd { margin: 0; font-size: 14px; line-height: 1.6; white-space: pre-wrap; }
 .receipt-parties h2, .receipt-section h2 { font-size: 19px; margin-bottom: 22px; }

@@ -1,4 +1,4 @@
-import {COMPANY_NAME,COMPANY_EMAIL} from "./brand";
+import {COMPANY_NAME,COMPANY_EMAIL,COMPANY_HEAD_OFFICE} from "./brand";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { api, apiUrl } from "./api";
@@ -49,6 +49,7 @@ export function SubmissionReceiptPage() {
     </div>
     <article className="receipt-card" aria-labelledby="receipt-title">
       <div className="receipt-heading"><div><div className="receipt-brand">{COMPANY_NAME}</div><p>Freight, without friction.</p></div><div><p className="eyebrow orange">SUBMISSION RECEIPT</p><h1 id="receipt-title">{booking ? "Shipment request" : "Contact inquiry"}</h1></div></div>
+      <address className="receipt-office"><strong>Head office</strong><br/>{COMPANY_HEAD_OFFICE}</address>
       <dl className="receipt-meta"><Detail label="Reference ID" value={receipt.reference}/><Detail label="Submitted on" value={new Date(receipt.submittedAt).toLocaleString()}/></dl>
       {receipt.kind === "shipment" ? <>
         <div className="receipt-parties">{(["sender", "recipient"] as const).map(key => <section key={key}><h2>{key === "sender" ? "Sender & pickup" : "Recipient & delivery"}</h2><dl><Detail label="Full name" value={receipt.details[key].name}/><Detail label="Phone number" value={receipt.details[key].phone}/><Detail label="Email address" value={receipt.details[key].email}/><Detail label={key === "sender" ? "Pickup address" : "Delivery address"} value={receipt.details[key].address}/></dl></section>)}</div>
