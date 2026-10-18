@@ -16,7 +16,7 @@ import {
   type TrackingResponse,
 } from "./contracts";
 import { api, send, ApiError } from "./api";
-import { COMPANY_HEAD_OFFICE } from "./brand";
+import { COMPANY_HEAD_OFFICE, COMPANY_EMAIL } from "./brand";
 import {
   Header,
   Footer,
@@ -32,176 +32,10 @@ import { AdminDashboard } from "./management";
 import { Mailbox } from "./mailbox";
 import "./styles.css";
 import "./home-polish.css";
+import "./reference-design.css";
+import { HomePage as Home, ServicesPage, AboutPage } from "./Marketing";
 import { TrackingProgress } from "./TrackingProgress";
-import { CountUp } from "./CountUp";
 import { SubmissionReceiptPage, type SubmissionConfirmation } from "./SubmissionReceipt";
-import { HeroCarousel } from "./HeroCarousel";
-import { useScrollReveal } from "./useScrollReveal";
-function Home() {
-  const homeRef = useRef<HTMLElement>(null);
-  useScrollReveal(homeRef);
-  const navigate = useNavigate();
-  const [trackingCode, setTrackingCode] = useState("");
-  return (
-    <main className="home-page" ref={homeRef}>
-      <HeroCarousel />
-      <section className="home-tracking" aria-labelledby="home-tracking-title">
-        <div className="home-tracking-copy">
-          <p className="eyebrow orange">YOUR SHIPMENT, AT A GLANCE</p>
-          <h2 id="home-tracking-title">Where’s your cargo?</h2>
-          <p>Enter your tracking code to see the latest shipment updates.</p>
-        </div>
-        <form
-          className="home-tracking-form"
-          onSubmit={(event) => {
-            event.preventDefault();
-            const code = trackingCode.trim().toUpperCase();
-            if (code) navigate(`/track/${encodeURIComponent(code)}`);
-          }}
-        >
-          <label htmlFor="home-tracking-code">Tracking code</label>
-          <div className="home-tracking-controls">
-            <input
-              id="home-tracking-code"
-              name="trackingCode"
-              placeholder="Enter your tracking code"
-              value={trackingCode}
-              onChange={(event) => setTrackingCode(event.target.value)}
-              required
-              maxLength={80}
-              autoCapitalize="characters"
-              autoComplete="off"
-              spellCheck={false}
-            />
-            <button className="button orange-bg" disabled={!trackingCode.trim()}>
-              Track shipment <span aria-hidden="true">↗</span>
-            </button>
-          </div>
-        </form>
-      </section>
-      <section className="statistics" id="about">
-        <div>
-          <p className="eyebrow orange">BUILT FOR COMPLEX SUPPLY CHAINS</p>
-          <h2>
-            From a single pallet to an entire supply chain, our network keeps
-            your cargo moving without the usual complexity.
-          </h2>
-        </div>
-        <div className="stat">
-          <CountUp value={98.7} decimals={1} suffix="%" />
-          <span>On-time delivery</span>
-        </div>
-        <div className="stat">
-          <CountUp value={120} suffix="+" />
-          <span>Countries served</span>
-        </div>
-        <div className="stat">
-          <CountUp value={24} suffix="/7" />
-          <span>Shipment visibility</span>
-        </div>
-        <img className="about-background" src="/images/ocean-small.webp" srcSet="/images/ocean-small.webp 800w, /images/ocean-wide.webp 1600w" sizes="100vw" width="1600" height="1000" loading="lazy" decoding="async" alt="" />
-      </section>
-      <section className="services" id="services">
-        <p className="eyebrow">WHAT WE MOVE</p>
-        <div className="section-heading">
-          <h2>
-            ONE PARTNER.
-            <br />
-            EVERY ROUTE.
-          </h2>
-          <p>
-            Connected freight services, managed by one accountable team from
-            pickup to delivery.
-          </p>
-        </div>
-        <div className="service-grid">
-          {[
-            [
-              "300+ PORTS",
-              "Ocean Freight",
-              "Flexible full-container and shared-container shipping across every major trade lane.",
-            ],
-            [
-              "1–3 DAY TRANSIT",
-              "Air Freight",
-              "Priority and scheduled air cargo for time-critical shipments around the world.",
-            ],
-            [
-              "DOOR TO DOOR",
-              "Ground Transport",
-              "Reliable first and final-mile trucking with visibility at every handoff.",
-            ],
-          ].map(([tag, name, description], i) => (
-            <Link
-              className="service-card"
-              key={name}
-              to={"/book?type=" + encodeURIComponent(name)}
-            >
-              <div className="service-image"><img src={`/images/${["ocean", "air", "ground"][i]}-small.webp`} width="800" height="520" loading="lazy" decoding="async" alt={["Container ship carrying freight at sea", "Cargo aircraft approaching the runway", "Freight trucks travelling along a highway"][i]} /></div>
-              <div className="service-number">
-                0{i + 1}
-                <span>↗</span>
-              </div>
-              <p className="eyebrow orange">{tag}</p>
-              <h3>{name}</h3>
-              <p>{description}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
-      <section className="visibility" id="network">
-        <div className="radar">
-          <img className="operations-photo" src="/images/warehouse-small.webp" srcSet="/images/warehouse-small.webp 800w, /images/warehouse-wide.webp 1600w" sizes="(max-width: 800px) 100vw, 50vw" width="1600" height="1000" loading="lazy" decoding="async" alt="Organized warehouse shelving and stored freight" />
-          <div className="ring ring-1" />
-          <div className="ring ring-2" />
-          <div className="ring ring-3" />
-          <span className="radar-dot dot-1" />
-          <span className="radar-dot dot-2" />
-          <div>
-            <strong>24</strong>
-            <span>GLOBAL HUBS</span>
-          </div>
-        </div>
-        <div className="visibility-copy">
-          <p className="eyebrow orange">CLARITY AT EVERY MILE</p>
-          <h2>
-            LOGISTICS YOU
-            <br />
-            CAN SEE
-            <br />
-            COMING.
-          </h2>
-          <p>
-            Proactive teams, transparent milestones, and one shared view of your
-            freight. We turn uncertainty into clear decisions.
-          </p>
-          {[
-            "One point of contact",
-            "Shipment milestone updates",
-            "Carbon-conscious route options",
-          ].map((v, i) => (
-            <div className="feature" key={v}>
-              <span>0{i + 1}</span>
-              {v}
-            </div>
-          ))}
-        </div>
-      </section>
-      <section className="cta">
-        <p className="eyebrow">YOUR NEXT SHIPMENT</p>
-        <h2>
-          LET’S GET IT
-          <br />
-          MOVING.
-        </h2>
-        <p>Tell us where it needs to go. We’ll take care of the rest.</p>
-        <Link to="/book" className="button dark">
-          Request a quote <span>↗</span>
-        </Link>
-      </section>
-    </main>
-  );
-}
 function Book() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -600,7 +434,7 @@ function Contact() {
               </Field>
             </div>
             <Field label="Subject">
-              <input name="subject" required maxLength={200} />
+              <input name="subject" required maxLength={200} defaultValue={new URLSearchParams(location.search).get("subject") || ""} />
             </Field>
             <Field label="Message">
               <textarea name="body" rows={6} required maxLength={10000} />
@@ -616,9 +450,11 @@ function Contact() {
               {busy ? "Saving…" : "Send message ↗"}
             </button>
           </form>
-          <aside>
+          <aside className="contact-information">
             <p className="eyebrow orange">HEAD OFFICE</p>
             <p>{COMPANY_HEAD_OFFICE}<br /><small>Full address to be confirmed.</small></p>
+            <p className="eyebrow orange">EMAIL ADDRESS</p>
+            <p><a href={`mailto:${COMPANY_EMAIL}`}>{COMPANY_EMAIL}</a></p>
             <h2>
               One team.
               <br />
@@ -653,6 +489,8 @@ createRoot(document.getElementById("root")!).render(
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/book" element={<Book />} />
+        <Route path="/services" element={<ServicesPage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/receipt" element={<SubmissionReceiptPage />} />
         <Route path="/track" element={<Track />} />
         <Route path="/track/:code" element={<Track />} />

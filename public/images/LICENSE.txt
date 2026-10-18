@@ -6,8 +6,15 @@ https://help.pexels.com/hc/en-us/articles/360042295214-Can-I-use-the-photos-and-
 ocean: https://www.pexels.com/photo/container-ship-on-the-ocean-12047429/
 ground: https://www.pexels.com/photo/white-volvo-semi-truck-on-side-of-road-2199293/
 air: https://www.pexels.com/photo/cargo-airplane-11935038/
-warehouse: https://www.pexels.com/photo/shelves-on-a-warehouse-4483608/
 
 Images resized/cropped and compressed to WebP locally. Stock images illustrate
 freight services and do not imply ownership of depicted vehicles or facilities,
 or endorsement by any depicted operator. No runtime stock-photo API is used.
+
+Additional reference-redesign stock (Pexels License):
+warehouse: https://www.pexels.com/photo/boxes-on-shelves-inside-a-warehouse-5156696/
+operations: https://www.pexels.com/photo/photo-of-a-man-scanning-products-in-a-warehouse-4483942/
+processing: https://www.pexels.com/photo/male-employee-looking-at-a-parcel-6170400/
+tracking: https://www.pexels.com/photo/man-checking-the-documents-6170407/
+delivery: https://www.pexels.com/photo/man-delivering-parcel-6169667/
+port: https://www.pexels.com/photo/a-port-with-shipping-containers-and-cranes-13025947/

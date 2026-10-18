@@ -4,7 +4,7 @@ export function useScrollReveal(root: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (!root.current || media.matches || typeof IntersectionObserver === "undefined") return;
-    const elements = root.current.querySelectorAll<HTMLElement>(".home-tracking, .statistics > div, .section-heading, .service-card, .visibility-copy > *, .radar, .cta > *");
+    const elements = root.current.querySelectorAll<HTMLElement>(".home-tracking, .reference-highlights article, .intro-copy, .intro-photos, .reference-service-tile, .workflow-grid article, .reach-copy, .reach-photo, .reference-assurance > *");
     const observer = new IntersectionObserver(entries => {
       for (const entry of entries) if (entry.isIntersecting) {
         entry.target.classList.add("is-revealed"); observer.unobserve(entry.target);

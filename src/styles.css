@@ -584,6 +584,7 @@ footer {
   background: var(--navy);
   color: white;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   padding: 60px 6%;
@@ -596,6 +597,23 @@ footer > span {
 footer > div {
   display: flex;
   gap: 28px;
+  align-items: center;
+}
+footer > div a:last-child {
+  white-space: nowrap;
+}
+footer > div a:first-child {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.footer-copyright {
+  flex-basis: 100%;
+  margin: 0;
+  padding-top: 24px;
+  border-top: 1px solid #ffffff20;
+  color: #a4b7c2;
+  font-size: 12px;
+  line-height: 1.7;
 }
 .workspace {
   max-width: 1480px;
@@ -1607,14 +1625,23 @@ pre {
   }
   footer {
     flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
     padding: 40px 7%;
     gap: 30px;
   }
   footer > div {
     width: 100%;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
     font-size: 12px;
     gap: 12px;
+  }
+  .footer-copyright {
+    flex-basis: auto;
+    width: 100%;
+    padding-top: 20px;
   }
   .workspace {
     padding: 40px 5% 60px;
