@@ -11,6 +11,8 @@ export function Login({
 }) {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [resetMode, setResetMode] = useState(false);
+  const [resetSuccess, setResetSuccess] = useState("");
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.currentTarget));
@@ -24,6 +26,73 @@ export function Login({
     } finally {
       setBusy(false);
     }
+  }
+  if (admin && resetMode) {
+    return (
+      <form
+        className="panel login-panel"
+        onSubmit={async (e: FormEvent<HTMLFormElement>) => {
+          e.preventDefault();
+          setError("");
+          setResetSuccess("");
+          const data = Object.fromEntries(new FormData(e.currentTarget));
+          const email = String(data.email || "").trim();
+          const currentPassword = String(data.currentPassword || "");
+          const newPassword = String(data.newPassword || "").trim();
+          const confirmPassword = String(data.confirmPassword || "").trim();
+          if (!newPassword || newPassword.length < 4) {
+            setError("New PIN must be at least 4 characters.");
+            return;
+          }
+          if (newPassword !== confirmPassword) {
+            setError("New PIN and confirmation do not match.");
+            return;
+          }
+          setBusy(true);
+          try {
+            await api("/admin/reset-pin", send("POST", { email, currentPassword, newPassword }));
+            setResetSuccess("Admin PIN reset successfully. You can now sign in with your new PIN.");
+            setResetMode(false);
+          } catch (e: any) {
+            setError(e.message);
+          } finally {
+            setBusy(false);
+          }
+        }}
+      >
+        <p className="eyebrow orange">OPERATIONS SECURITY</p>
+        <h2>Reset Admin PIN</h2>
+        <p>Enter your administrator email, current PIN, and choose a new PIN.</p>
+        <Field label="Email address">
+          <input name="email" type="email" required autoComplete="username" />
+        </Field>
+        <Field label="Current PIN">
+          <input name="currentPassword" type="password" required autoComplete="current-password" />
+        </Field>
+        <Field label="New PIN">
+          <input name="newPassword" type="password" required minLength={4} maxLength={200} autoComplete="new-password" placeholder="Min 4 characters" />
+        </Field>
+        <Field label="Confirm new PIN">
+          <input name="confirmPassword" type="password" required minLength={4} maxLength={200} autoComplete="new-password" placeholder="Confirm new PIN" />
+        </Field>
+        <ErrorBox error={error} />
+        <div className="actions" style={{ display: "flex", gap: "12px", alignItems: "center", marginTop: "16px" }}>
+          <button className="button orange-bg" disabled={busy}>
+            {busy ? "Updating…" : "Reset PIN ↗"}
+          </button>
+          <button
+            type="button"
+            className="button outline"
+            onClick={() => {
+              setResetMode(false);
+              setError("");
+            }}
+          >
+            Back to sign in
+          </button>
+        </div>
+      </form>
+    );
   }
   return (
     <form className="panel login-panel" onSubmit={submit}>
@@ -48,9 +117,29 @@ export function Login({
         />
       </Field>
       <ErrorBox error={error} />
+      {resetSuccess && (
+        <div className="code-warning" style={{ margin: "16px 0", color: "#166534", borderColor: "#bbf7d0", backgroundColor: "#f0fdf4" }}>
+          <strong>✓ {resetSuccess}</strong>
+        </div>
+      )}
       <button className="button orange-bg" disabled={busy}>
         {busy ? "Signing in…" : "Sign in ↗"}
       </button>
+      {admin && (
+        <p style={{ marginTop: "16px" }}>
+          <button
+            type="button"
+            className="text-button"
+            onClick={() => {
+              setResetMode(true);
+              setError("");
+              setResetSuccess("");
+            }}
+          >
+            Reset PIN ↗
+          </button>
+        </p>
+      )}
       {!admin && (
         <p className="muted small">
           Lost your code? Contact our team to verify your identity and request a

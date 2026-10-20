@@ -74,6 +74,15 @@ export function AdminDashboard() {
               Map locations
             </button>
             <button
+              className={tab === "pin" ? "active" : ""}
+              onClick={() => {
+                setTab("pin");
+                setSelected(undefined);
+              }}
+            >
+              Reset PIN
+            </button>
+            <button
               className="logout"
               onClick={async () => {
                 try { await api("/logout", send("POST", {})); setReady(false); setSelected(undefined); setLogoutError(""); }
@@ -87,6 +96,8 @@ export function AdminDashboard() {
             <Inbox admin onUnread={setUnread} />
           ) : tab === "locations" ? (
             <Locations />
+          ) : tab === "pin" ? (
+            <ResetAdminPin />
           ) : selected ? (
             <Detail code={selected} back={() => setSelected(undefined)} />
           ) : (
@@ -909,6 +920,111 @@ function Locations() {
           </button>
         </div>
       ))}
+    </section>
+  );
+}
+function ResetAdminPin() {
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    const f = e.currentTarget;
+    const d = Object.fromEntries(new FormData(f));
+    const currentPassword = String(d.currentPassword || "");
+    const newPassword = String(d.newPassword || "").trim();
+    const confirmPassword = String(d.confirmPassword || "").trim();
+
+    if (!newPassword || newPassword.length < 4) {
+      setError("New PIN must be at least 4 characters.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError("New PIN and confirmation do not match.");
+      return;
+    }
+
+    setBusy(true);
+    try {
+      await api(
+        "/admin/reset-pin",
+        send("POST", {
+          ...(currentPassword ? { currentPassword } : {}),
+          newPassword,
+        }),
+      );
+      setSuccess("Admin PIN has been reset successfully. Use this new PIN for future sign-ins.");
+      f.reset();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <section className="panel" style={{ maxWidth: 540 }}>
+      <p className="eyebrow orange">OPERATIONS SECURITY</p>
+      <h2>Reset Admin PIN</h2>
+      <p>
+        Change the login PIN / password for the administrator panel.
+      </p>
+      <form onSubmit={submit}>
+        <Field label="Current PIN (optional if signed in)">
+          <input
+            name="currentPassword"
+            type="password"
+            autoComplete="current-password"
+            placeholder="Enter current PIN"
+          />
+        </Field>
+        <Field label="New PIN">
+          <input
+            name="newPassword"
+            type="password"
+            required
+            minLength={4}
+            maxLength={200}
+            autoComplete="new-password"
+            placeholder="Enter new PIN (minimum 4 characters)"
+          />
+        </Field>
+        <Field label="Confirm new PIN">
+          <input
+            name="confirmPassword"
+            type="password"
+            required
+            minLength={4}
+            maxLength={200}
+            autoComplete="new-password"
+            placeholder="Re-enter new PIN"
+          />
+        </Field>
+        <ErrorBox error={error} />
+        {success && (
+          <div
+            className="code-warning"
+            style={{
+              margin: "16px 0",
+              color: "#166534",
+              borderColor: "#bbf7d0",
+              backgroundColor: "#f0fdf4",
+            }}
+          >
+            <strong>✓ {success}</strong>
+          </div>
+        )}
+        <button
+          className="button orange-bg"
+          disabled={busy}
+          style={{ marginTop: "16px" }}
+        >
+          {busy ? "Updating PIN…" : "Update PIN ↗"}
+        </button>
+      </form>
     </section>
   );
 }
